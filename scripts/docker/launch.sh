@@ -5,7 +5,7 @@ set -o allexport; source .env; set +o allexport
 CMD=${1:-/bin/bash}
 
 docker run -it --rm \
-  --gpus '"device=1"' \
+  --gpus '"device=0,1,2,3"' \
   --net=host \
   --ipc=host \
   --shm-size=1g \

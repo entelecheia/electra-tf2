@@ -1,0 +1,8 @@
+# @package _global_
+
+defaults:
+  - override /training: pretrain
+
+app_name: eKonPLM
+# project: ekonelectra_pretok
+# data_dir: ./data/tbts/eKonPLM/lmdata 

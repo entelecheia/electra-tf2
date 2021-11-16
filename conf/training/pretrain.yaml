@@ -1,4 +1,58 @@
-# Specify the dataset to perform --action on
-max_seq_length: 512
-do_lower_case: 1 # Specify whether it is cased (0) or uncased (1) (any number greater than 0 will be treated as uncased)
-vocab_file: ${data_dir}/vocab.txt
+# _target_: runner.PreTrain
+
+model_name: ${training.model_size}
+# base or large
+model_size: base
+pretrain_tfrecords:
+fp16_compression: true
+# Whether to use fp16
+amp: true
+# Whether to use xla
+xla: true
+
+phase2: false
+num_train_steps: 2000
+num_warmup_steps: 10000 
+train_batch_size: 176
+max_seq_length: 128
+learning_rate: 6e-3
+# Number of Gradient Accumulation steps
+gradient_accumulation_steps: 48
+
+mask_prob: 0.15
+gen_weight: 1.0
+disc_weight: 50.0
+generator_hidden_size: 0.3333333
+
+# Training metrics logging frequency
+# log_freq: 10
+save_checkpoints_steps: 500
+keep_checkpoint_max:
+restore_checkpoint: latest
+load_weights: false
+weights_dir:
+
+# adam or lamb
+optimizer: lamb
+# Whether to apply adaptive LR on LayerNorm and biases
+skip_adaptive: true
+lr_decay_power: 0.5
+# Optimizer beta1
+opt_beta_1: 0.878
+# Optimizer beta2
+opt_beta_2: 0.974
+end_lr: 0.0
+seed: 12439
+
+
+work_dir: ${work_dir}/outputs/${project}
+data_dir: ${work_dir}/lmdata 
+log_dir: ${training.work_dir}/logs
+results_dir: ${training.work_dir}/results
+skip_checkpoint: false
+# If provided, the json summary will be written to the specified file.
+json-summary:
+
+wandb_project: ${project}
+wandb_group: ${project}
+wandb_dir: ${training.work_dir}/wandb
