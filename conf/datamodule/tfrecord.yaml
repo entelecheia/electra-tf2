@@ -1,0 +1,16 @@
+defaults:
+  - default
+
+_target_: create_tfrecords.TFRecords
+  
+n_training_shards: 2048
+n_test_shards: 2048
+fraction_test_set: 0.1
+max_seq_length: 512
+# Specify whether it is cased (0) or uncased (1) (any number greater than 0 will be treated as uncased)
+do_lower_case: 1 
+# Specify absolute path to vocab file to use)
+vocab_file: 
+tfrecord_folder_prefix: _lower_case_${datamodule.do_lower_case}_seq_len_${datamodule.max_seq_length}_random_seed_${datamodule.random_seed}
+sharded_dir: ${datamodule.output_dir}/sharded_training_${datamodule.n_training_shards}_test_${datamodule.n_test_shards}_fraction_${datamodule.fraction_test_set}
+tfrecord_dir: ${datamodule.output_dir}/tfrecord${datamodule.tfrecord_folder_prefix}
