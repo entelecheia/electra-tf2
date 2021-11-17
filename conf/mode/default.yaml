@@ -2,6 +2,8 @@
 
 # default running mode
 default_mode: True
+print_config: false
+print_resolved_config: True
 
 
 hydra:

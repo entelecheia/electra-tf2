@@ -12,5 +12,5 @@ do_lower_case: 1
 # Specify absolute path to vocab file to use)
 vocab_file: 
 tfrecord_folder_prefix: _lower_case_${datamodule.do_lower_case}_seq_len_${datamodule.max_seq_length}_random_seed_${datamodule.random_seed}
-sharded_dir: ${datamodule.output_dir}/sharded_training_${datamodule.n_training_shards}_test_${datamodule.n_test_shards}_fraction_${datamodule.fraction_test_set}
+sharded_dir: ${datamodule.data_dir}/sharded_training_${datamodule.n_training_shards}_test_${datamodule.n_test_shards}_fraction_${datamodule.fraction_test_set}
 tfrecord_dir: ${datamodule.output_dir}/tfrecord${datamodule.tfrecord_folder_prefix}

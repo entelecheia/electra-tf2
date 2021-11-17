@@ -38,6 +38,11 @@ from modeling import PretrainingModel
 from optimization import create_optimizer, GradientAccumulator
 import dllogger
 
+import hydra
+from omegaconf import DictConfig, OmegaConf
+from pprint import pprint
+
+
 class PretrainingConfig(object):
     """Defines pre-training hyperparameters."""
 
@@ -237,60 +242,64 @@ def train_one_step(config, model, optimizer, features, accumulator, first_step, 
 
     return unscaled_loss, eval_fn_inputs
 
-def main(e2e_start_time):
+def main(args, e2e_start_time):
     # Parse essential argumentss
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model_name", required=True)
-    parser.add_argument("--model_size", default="base", type=str, help="base or large")
-    parser.add_argument("--pretrain_tfrecords", type=str)
-    parser.add_argument("--phase2", action='store_true')
-    parser.add_argument("--fp16_compression", action='store_true')
-    parser.add_argument("--amp", action='store_true',
-                        help="Whether to use fp16.")
-    parser.add_argument("--xla", action='store_true',
-                        help="Whether to use xla.")
-    parser.add_argument("--seed", default=42, type=int)
-    parser.add_argument("--num_train_steps", type=int)
-    parser.add_argument("--num_warmup_steps", type=int)
-    parser.add_argument("--learning_rate", type=float)
-    parser.add_argument("--train_batch_size", type=int)
-    parser.add_argument("--max_seq_length", type=int)
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("--model_name", required=True)
+    # parser.add_argument("--model_size", default="base", type=str, help="base or large")
+    # parser.add_argument("--pretrain_tfrecords", type=str)
+    # parser.add_argument("--phase2", action='store_true')
+    # parser.add_argument("--fp16_compression", action='store_true')
+    # parser.add_argument("--amp", action='store_true',
+    #                     help="Whether to use fp16.")
+    # parser.add_argument("--xla", action='store_true',
+    #                     help="Whether to use xla.")
+    # parser.add_argument("--seed", default=42, type=int)
+    # parser.add_argument("--num_train_steps", type=int)
+    # parser.add_argument("--num_warmup_steps", type=int)
+    # parser.add_argument("--learning_rate", type=float)
+    # parser.add_argument("--train_batch_size", type=int)
+    # parser.add_argument("--max_seq_length", type=int)
 
-    parser.add_argument("--mask_prob", type=float)
-    parser.add_argument("--disc_weight", type=float)
-    parser.add_argument("--generator_hidden_size", type=float)
+    # parser.add_argument("--mask_prob", type=float)
+    # parser.add_argument("--disc_weight", type=float)
+    # parser.add_argument("--generator_hidden_size", type=float)
 
-    parser.add_argument("--log_freq", type=int, default=10, help="Training metrics logging frequency")
-    parser.add_argument("--save_checkpoints_steps", type=int)
-    parser.add_argument("--keep_checkpoint_max", type=int)
-    parser.add_argument("--restore_checkpoint", default=None, type=str)
-    parser.add_argument("--load_weights", action='store_true')
-    parser.add_argument("--weights_dir")
+    # parser.add_argument("--log_freq", type=int, default=10, help="Training metrics logging frequency")
+    # parser.add_argument("--save_checkpoints_steps", type=int)
+    # parser.add_argument("--keep_checkpoint_max", type=int)
+    # parser.add_argument("--restore_checkpoint", default=None, type=str)
+    # parser.add_argument("--load_weights", action='store_true')
+    # parser.add_argument("--weights_dir")
 
-    parser.add_argument("--optimizer", default="adam", type=str, help="adam or lamb")
-    parser.add_argument("--skip_adaptive", action='store_true', help="Whether to apply adaptive LR on LayerNorm and biases")
-    parser.add_argument("--gradient_accumulation_steps", type=int, default=1, help="Number of Gradient Accumulation steps")
-    parser.add_argument("--lr_decay_power", type=float, default=0.5, help="LR decay power")
-    parser.add_argument("--opt_beta_1", type=float, default=0.878, help="Optimizer beta1")
-    parser.add_argument("--opt_beta_2", type=float, default=0.974, help="Optimizer beta2")
-    parser.add_argument("--end_lr", type=float, default=0.0, help="Ending LR")
-    parser.add_argument("--log_dir", type=str, default=None, help="Path to store logs")
-    parser.add_argument("--results_dir", type=str, default=None, help="Path to store all model results")
-    parser.add_argument("--skip_checkpoint", action='store_true', default=False, help="Path to store logs")
-    parser.add_argument('--json-summary', type=str, default=None,
-                        help='If provided, the json summary will be written to the specified file.')
-    parser.add_argument("--wandb_project", type=str, default=None, help="project namne for wandb")
-    parser.add_argument("--wandb_group", type=str, default=None, help="group namne for wandb")
-    parser.add_argument("--wandb_dir", type=str, default=None, help="Path to store wandb logs")
-    args = parser.parse_args()
-    config = PretrainingConfig(**args.__dict__)
+    # parser.add_argument("--optimizer", default="adam", type=str, help="adam or lamb")
+    # parser.add_argument("--skip_adaptive", action='store_true', help="Whether to apply adaptive LR on LayerNorm and biases")
+    # parser.add_argument("--gradient_accumulation_steps", type=int, default=1, help="Number of Gradient Accumulation steps")
+    # parser.add_argument("--lr_decay_power", type=float, default=0.5, help="LR decay power")
+    # parser.add_argument("--opt_beta_1", type=float, default=0.878, help="Optimizer beta1")
+    # parser.add_argument("--opt_beta_2", type=float, default=0.974, help="Optimizer beta2")
+    # parser.add_argument("--end_lr", type=float, default=0.0, help="Ending LR")
+    # parser.add_argument("--log_dir", type=str, default=None, help="Path to store logs")
+    # parser.add_argument("--results_dir", type=str, default=None, help="Path to store all model results")
+    # parser.add_argument("--skip_checkpoint", action='store_true', default=False, help="Path to store logs")
+    # parser.add_argument('--json-summary', type=str, default=None,
+    #                     help='If provided, the json summary will be written to the specified file.')
+    # parser.add_argument("--wandb_project", type=str, default=None, help="project namne for wandb")
+    # parser.add_argument("--wandb_group", type=str, default=None, help="group namne for wandb")
+    # parser.add_argument("--wandb_dir", type=str, default=None, help="Path to store wandb logs")
+    # args = parser.parse_args()
+    # config = PretrainingConfig(**args.__dict__)
+    # config = PretrainingConfig(model_name=args['model_name'], **args)
+    config = PretrainingConfig(**args)
+    print(config)
+    os.makedirs(config.results_dir, exist_ok=True)
+
     # Padding for divisibility by 8
     if config.vocab_size % 8 != 0:
         config.vocab_size += 8 - (config.vocab_size % 8)
 
     # Set up tensorflow
     hvd.init()
-
 
     args.log_dir = config.log_dir
     # DLLogger
@@ -500,9 +509,28 @@ def main(e2e_start_time):
     return args
 
 
-if __name__ == "__main__":
+@hydra.main(config_path="conf", config_name="config")
+def hydra_main(cfg: DictConfig):
+
+    # Pretty print config using Rich library
+    if cfg.get("print_config"):
+        print('## hydra configuration ##')
+        print(OmegaConf.to_yaml(cfg))
+
+    if cfg.get("print_resolved_config"):
+        args = OmegaConf.to_container(cfg, resolve=True)
+        print('## hydra configuration resolved ##')
+        pprint(args)
+        print()
+
+    print(f"Current working directory : {os.getcwd()}")
     start_time = time.time()
-    args = main(start_time)
+    # args = OmegaConf.to_container(cfg.training, resolve=True)
+    args = main(cfg.training, start_time)
     log("Total Time:{:.4f}".format(time.time() - start_time))
     if is_main_process():
         postprocess_dllog(args)
+
+
+if __name__ == "__main__":
+    hydra_main()

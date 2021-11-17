@@ -2,9 +2,10 @@
 
 model_name: ${training.model_size}
 # base or large
-model_size: base
-pretrain_tfrecords:
-fp16_compression: true
+model_size: 
+do_lower_case: 1 
+pretrain_tfrecords: ${datamodule.output_dir}/tfrecord_lower_case_${datamodule.do_lower_case}_seq_len_${datamodule.max_seq_length}_random_seed_${datamodule.random_seed}/${datamodule.dataset}/train/pretrain_data*
+fp16_compression: false
 # Whether to use fp16
 amp: true
 # Whether to use xla
@@ -14,7 +15,7 @@ phase2: false
 num_train_steps: 2000
 num_warmup_steps: 10000 
 train_batch_size: 176
-max_seq_length: 128
+max_seq_length: ${datamodule.max_seq_length}
 learning_rate: 6e-3
 # Number of Gradient Accumulation steps
 gradient_accumulation_steps: 48
@@ -44,15 +45,15 @@ opt_beta_2: 0.974
 end_lr: 0.0
 seed: 12439
 
-
+vocab_file: ${datamodule.vocab_file}
 work_dir: ${work_dir}/outputs/${project}
 data_dir: ${work_dir}/lmdata 
 log_dir: ${training.work_dir}/logs
 results_dir: ${training.work_dir}/results
 skip_checkpoint: false
 # If provided, the json summary will be written to the specified file.
-json-summary:
+json_summary:
 
 wandb_project: ${project}
-wandb_group: ${project}
-wandb_dir: ${training.work_dir}/wandb
+wandb_group: 
+wandb_dir: ${training.work_dir}

@@ -2,10 +2,11 @@
 set -x
 set -o allexport; source .env; set +o allexport
 
-CMD=${1:-/bin/bash}
+NV_VISIBLE_DEVICES=${1:-"4,5,6,7"}
+CMD=${2:-/bin/bash}
 
 docker run -it --rm \
-  --gpus '"device=0,1,2,3"' \
+  --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=$NV_VISIBLE_DEVICES \
   --net=host \
   --ipc=host \
   --shm-size=1g \

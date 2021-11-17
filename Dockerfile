@@ -31,3 +31,5 @@ RUN pip install --upgrade --no-cache-dir pip \
 
 RUN apt-get install -y iputils-ping
 COPY . .
+
+CMD ["/bin/bash", "./scripts/docker/run.sh"]

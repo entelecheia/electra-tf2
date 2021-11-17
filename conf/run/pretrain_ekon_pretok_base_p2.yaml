@@ -1,18 +1,17 @@
 # @package _global_
 
 defaults:
-  - pretrain_ekon_pretok_base
+  - tfrecord_ekon_pretok_512
+  - override /project: ekonelectra_pretok
+  - override /training: pretrain_electra_base
 
-project: ekonelectra_pretok
 training:
   phase2: true
   resume_training: latest
   num_train_steps: 933
   num_warmup_steps: 200 
   train_batch_size: 24
-  max_seq_length: 128
   learning_rate: 4e-3
   gradient_accumulation_steps: 144
-  pretrain_tfrecords: ${training.data_dir}/tfrecord_lower_case_1_seq_len_512_random_seed_12345/ekon_pretok/train/pretrain_data*
   wandb_group: ${training.wandb_project}_p2
 

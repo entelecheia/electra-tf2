@@ -1,0 +1,26 @@
+defaults:
+  - pretrain
+
+# project: ekonelectra_pretok
+# data_dir: ./data/tbts/eKonPLM/lmdata 
+training:
+model_size: base
+# Whether to use fp16
+amp: true
+# Whether to use xla
+xla: true
+mask_prob: 0.15
+gen_weight: 1.0
+disc_weight: 50.0
+generator_hidden_size: 0.3333333
+# adam or lamb
+optimizer: lamb
+# Whether to apply adaptive LR on LayerNorm and biases
+skip_adaptive: true
+lr_decay_power: 0.5
+# Optimizer beta1
+opt_beta_1: 0.878
+# Optimizer beta2
+opt_beta_2: 0.974
+end_lr: 0.0
+seed: 12439

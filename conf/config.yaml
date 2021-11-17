@@ -4,6 +4,7 @@ app_name: electra-tf2
 defaults:
   - _self_
   - mode: default
+  - project: null
   - datamodule: null
   - training: null
   - logger: null
@@ -24,7 +25,7 @@ log_dir: ${work_dir}/logs
 runtime_dir: ${hydra:runtime.cwd}
 
 # pretty print config at the start of the run using Rich library
-print_config: false
-print_resolved_config: True
+print_config: true
+print_resolved_config: false
 # disable python warnings if they annoy you
 ignore_warnings: True

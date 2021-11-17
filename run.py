@@ -33,7 +33,7 @@ def main(cfg: DictConfig):
 	if cfg.get("datamodule"):
 		print(f"Instantiating datamodule <{cfg.datamodule._target_}>")
 		dm = hydra.utils.instantiate(cfg.datamodule)
-		dm.run()
+		# dm.run()
 
 
 if __name__ == "__main__":

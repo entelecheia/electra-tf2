@@ -176,7 +176,7 @@ def setup_logger(args):
     else:
         dllogger.init(backends = [dllogger.JSONStreamBackend(verbosity=1, filename=log_path)])
 
-    for k,v in vars(args).items():
+    for k,v in dict(args).items():
         dllogger.log(step='PARAMETER', data={k:v}, verbosity=0)
 
     container_setup_info = {

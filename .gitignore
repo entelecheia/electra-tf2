@@ -1,5 +1,7 @@
 # Initially taken from Github's Python gitignore file
 wandb/
+logs/
+scripts/nvidia/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
