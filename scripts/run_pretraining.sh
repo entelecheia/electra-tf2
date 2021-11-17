@@ -9,7 +9,7 @@ CODE_DIR=${4:-"/workspace/electra"}
 LOG_DIR=${5:-"$CODE_DIR/logs"}
 CONFIG_DIR=${5:-"$CODE_DIR/conf"}
 RUN_P1=${6:-"true"}
-RUN_P2=${7:-"true"}
+RUN_P2=${7:-"false"}
 
 mkdir -p $LOG_DIR
 

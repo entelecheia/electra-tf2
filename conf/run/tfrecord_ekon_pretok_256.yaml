@@ -4,9 +4,6 @@ defaults:
   - override /project: ekonelectra_pretok
   - override /datamodule: tfrecord
 
-app_name: eKonPLM
-project: ekon_pretok
-# data_dir: ./data/tbts/eKonPLM/lmdata 
 datamodule:
   output_dir: /workspace/data/tbts/eKonPLM/lmdata
   n_training_shards: 2048
