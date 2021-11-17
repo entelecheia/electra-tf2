@@ -9,7 +9,7 @@ CODE_DIR=${4:-"/workspace/electra"}
 LOG_DIR=${5:-"$CODE_DIR/logs"}
 CONFIG_DIR=${5:-"$CODE_DIR/conf"}
 RUN_P1=${6:-"true"}
-RUN_P2=${7:-"false"}
+RUN_P2=${7:-"true"}
 
 mkdir -p $LOG_DIR
 
@@ -28,9 +28,8 @@ if [ "$RUN_P1" == "true" ] ; then
    CMD="$PREFIX python3 $CMD"
    echo "Launch command: $CMD"
 
-   printf -v TAG "electra_pretraining_phase1_%s" "$precision"
    DATESTAMP=`date +'%y%m%d%H%M%S'`
-   LOGFILE=$LOG_DIR/$job_name.$TAG.$DATESTAMP.log
+   LOGFILE=$LOG_DIR/$CONFIG_FILE_P1.$DATESTAMP.log
    printf "Logs written to %s\n" "$LOGFILE"
 
    set -x
@@ -58,9 +57,8 @@ if [ "$RUN_P2" == "true" ] ; then
    echo "Launch command: $CMD"
 
 
-   printf -v TAG "electra_pretraining_phase2_%s" "$precision"
    DATESTAMP=`date +'%y%m%d%H%M%S'`
-   LOGFILE=$LOG_DIR/$job_name.$TAG.$DATESTAMP.log
+   LOGFILE=$LOG_DIR/$CONFIG_FILE_P2.$DATESTAMP.log
    printf "Logs written to %s\n" "$LOGFILE"
 
    set -x

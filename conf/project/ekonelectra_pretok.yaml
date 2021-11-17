@@ -3,5 +3,5 @@
 app_name: eKonPLM
 project: ekonelectra_pretok
 data_dir: ${work_dir}/lmdata
-datamodule:
-  dataset: ekon_pretok 
+dataset: ekon_pretok
+vocab_file: /workspace/data/models/tokenizers/ekon_wp_pretok_v32000/vocab.txt

@@ -1,11 +1,10 @@
 # @package _global_
 
 defaults:
-  - override /project: ekonelectra_pretok
   - override /datamodule: tfrecord
+  - override /project: ekonelectra_pretok
 
 datamodule:
-  output_dir: /workspace/data/tbts/eKonPLM/lmdata
   n_training_shards: 2048
   n_test_shards: 0
   fraction_test_set: 0
@@ -13,4 +12,3 @@ datamodule:
   random_seed: 12345
   max_seq_length: 512
   do_lower_case: 1
-  vocab_file: /workspace/data/models/tokenizers/ekon_wp_pretok_v32000/vocab.txt

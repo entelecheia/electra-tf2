@@ -2,13 +2,13 @@
 
 defaults:
   - tfrecord_ekon_pretok_512
-  - override /project: ekonelectra_pretok
   - override /training: pretrain_electra_base
+  - override /project: ekonelectra_pretok
 
 training:
   phase2: true
   resume_training: latest
-  num_train_steps: 933
+  num_train_steps: 10000
   num_warmup_steps: 200 
   train_batch_size: 24
   learning_rate: 4e-3

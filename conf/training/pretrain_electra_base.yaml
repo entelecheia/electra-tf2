@@ -1,8 +1,6 @@
 defaults:
   - pretrain
 
-# project: ekonelectra_pretok
-# data_dir: ./data/tbts/eKonPLM/lmdata 
 training:
 model_size: base
 # Whether to use fp16

@@ -1,7 +1,7 @@
 # Specify the dataset to perform --action on
-dataset: ${project}
+dataset: ${dataset} 
 data_dir: ${data_dir}
-output_dir: ${work_dir}/lmdata
+output_dir: ${data_dir}
 runtime_dir: ${runtime_dir}
 n_processes: 220
 random_seed: 12345

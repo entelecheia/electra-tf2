@@ -2,8 +2,8 @@
 
 defaults:
   - tfrecord_ekon_pretok_256
-  - override /project: ekonelectra_pretok
   - override /training: pretrain_electra_base
+  - override /project: ekonelectra_pretok
 
 training:
   phase2: false
