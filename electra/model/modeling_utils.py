@@ -23,11 +23,11 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.python.keras.saving import hdf5_format
 
-from configuration_utils import PretrainedConfig, BertConfig
-from file_utils import DUMMY_INPUTS, TF2_WEIGHTS_NAME, WEIGHTS_NAME, cached_path, hf_bucket_url, is_remote_url
-from file_utils import MULTIPLE_CHOICE_DUMMY_INPUTS, add_start_docstrings, add_start_docstrings_to_callable
-from tokenization_utils import BatchEncoding
-from utils import log
+from .configuration_utils import PretrainedConfig, BertConfig
+from ..util.file_utils import DUMMY_INPUTS, TF2_WEIGHTS_NAME, WEIGHTS_NAME, cached_path, hf_bucket_url, is_remote_url
+from ..util.file_utils import MULTIPLE_CHOICE_DUMMY_INPUTS, add_start_docstrings, add_start_docstrings_to_callable
+from .tokenization_utils import BatchEncoding
+from ..util.utils import log
 
 
 class TFModelUtilsMixin:

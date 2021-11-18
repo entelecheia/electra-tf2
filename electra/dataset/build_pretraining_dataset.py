@@ -23,8 +23,8 @@ import random
 import time
 import tensorflow as tf
 
-import utils
-from tokenization import ElectraTokenizer
+from ..util import utils
+from ..model.tokenization import ElectraTokenizer
 
 
 
@@ -194,6 +194,46 @@ def write_examples(job_id, args):
   example_writer.finish()
   log("Done!")
 
+
+def hydra_run(args):
+    print('Working Directory:', args.output_dir)
+    print('Dataset Name:', args.dataset)
+    print('tfrecord Directory:', args.tfrecord_dir)
+
+    if not os.path.exists(args.tfrecord_dir):
+        os.makedirs(args.tfrecord_dir)
+    if args.vocab_file is None:
+        args.vocab_file = os.path.join(args.output_dir, "vocab.txt")
+
+    _dirs = []
+    if args.n_training_shards > 0:
+        _dirs.append('train')
+    if args.n_test_shards > 0:
+        _dirs.append('test')
+
+    for _dir in _dirs:
+        args.corpus_dir = args.sharded_dir + "/" + _dir 
+        args.output_dir = args.tfrecord_dir + "/" + _dir
+        args.num_out_files = args.n_training_shards if _dir == 'train' else args.n_test_shards
+
+        build(args)
+
+
+def build(args):
+  random.seed(args.seed)
+
+  utils.rmkdir(args.output_dir)
+  if args.num_processes == 1:
+    write_examples(0, args)
+  else:
+    jobs = []
+    for i in range(args.num_processes):
+      job = multiprocessing.Process(target=write_examples, args=(i, args))
+      jobs.append(job)
+      job.start()
+    for job in jobs:
+      job.join()
+
 # python build_pretraining_dataset --corpus-dir
 def main():
   parser = argparse.ArgumentParser(description=__doc__)
@@ -218,19 +258,7 @@ def main():
   parser.add_argument("--seed", default=1314, type=int)
   args = parser.parse_args()
 
-  random.seed(args.seed)
-
-  utils.rmkdir(args.output_dir)
-  if args.num_processes == 1:
-    write_examples(0, args)
-  else:
-    jobs = []
-    for i in range(args.num_processes):
-      job = multiprocessing.Process(target=write_examples, args=(i, args))
-      jobs.append(job)
-      job.start()
-    for job in jobs:
-      job.join()
+  build(args)
 
 
 if __name__ == "__main__":

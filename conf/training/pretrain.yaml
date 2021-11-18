@@ -5,6 +5,8 @@ model_name: ${training.model_size}
 model_size: 
 do_lower_case: 1 
 pretrain_tfrecords: ${datamodule.output_dir}/tfrecord_lower_case_${datamodule.do_lower_case}_seq_len_${datamodule.max_seq_length}_random_seed_${datamodule.random_seed}/${datamodule.dataset}/train/pretrain_data*
+# random_seed -> seed
+# pretrain_tfrecords: ${datamodule.output_dir}/tfrecord_lower_case_${datamodule.do_lower_case}_seq_len_${datamodule.max_seq_length}_seed_${datamodule.random_seed}/${datamodule.dataset}/train/pretrain_data*
 fp16_compression: false
 # Whether to use fp16
 amp: true

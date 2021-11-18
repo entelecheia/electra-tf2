@@ -32,7 +32,7 @@ from typing import List, Optional, Sequence, Tuple, Union
 from tokenizers import AddedToken, Encoding
 from tokenizers.implementations import BaseTokenizer
 
-from file_utils import cached_path, hf_bucket_url, is_remote_url, is_tf_available, is_torch_available
+from ..util.file_utils import cached_path, hf_bucket_url, is_remote_url, is_tf_available, is_torch_available
 
 
 if is_tf_available():

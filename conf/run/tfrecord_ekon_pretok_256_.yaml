@@ -5,10 +5,11 @@ defaults:
   - override /project: ekonelectra_pretok
 
 datamodule:
+  output_dir: /workspace/data/tbts/eKonPLM/lmdata-test
   n_training_shards: 2048
   n_test_shards: 0
   fraction_test_set: 0
-  num_processes: 220
+  num_processes: 200
   random_seed: 12345
-  max_seq_length: 512
+  max_seq_length: 256
   do_lower_case: 1

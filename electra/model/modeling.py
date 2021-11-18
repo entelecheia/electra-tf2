@@ -17,12 +17,13 @@ import logging
 
 import tensorflow as tf
 
-from configuration import ElectraConfig
-from file_utils import add_start_docstrings, add_start_docstrings_to_callable
-from modeling_utils import ACT2FN, TFBertEncoder, TFBertPreTrainedModel
-from modeling_utils import get_initializer, shape_list
-from tokenization_utils import BatchEncoding
-import pretrain_utils, collections
+from .configuration import ElectraConfig
+from ..util.file_utils import add_start_docstrings, add_start_docstrings_to_callable
+from .modeling_utils import ACT2FN, TFBertEncoder, TFBertPreTrainedModel
+from .modeling_utils import get_initializer, shape_list
+from .tokenization_utils import BatchEncoding
+from ..pretrain import pretrain_utils
+import collections
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,7 @@
 defaults:
   - default
 
-_target_: create_tfrecords.TFRecords
+_target_: electra.runner.TFRecords
   
 n_training_shards: 2048
 n_test_shards: 2048
@@ -12,6 +12,9 @@ do_lower_case: 1
 # Specify absolute path to vocab file to use)
 vocab_size: ${vocab_size}
 vocab_file: ${vocab_file} 
-tfrecord_folder_prefix: _lower_case_${datamodule.do_lower_case}_seq_len_${datamodule.max_seq_length}_random_seed_${datamodule.random_seed}
-sharded_dir: ${datamodule.data_dir}/sharded_training_${datamodule.n_training_shards}_test_${datamodule.n_test_shards}_fraction_${datamodule.fraction_test_set}
-tfrecord_dir: ${datamodule.output_dir}/tfrecord${datamodule.tfrecord_folder_prefix}
+tfrecord_folder_prefix: _lower_case_${datamodule.do_lower_case}_seq_len_${datamodule.max_seq_length}_seed_${datamodule.seed}
+sharded_dir: ${datamodule.data_dir}/sharded_training_${datamodule.n_training_shards}_test_${datamodule.n_test_shards}_fraction_${datamodule.fraction_test_set}/${datamodule.dataset}
+tfrecord_dir: ${datamodule.output_dir}/tfrecord${datamodule.tfrecord_folder_prefix}/${datamodule.dataset}
+corpus_dir: 
+num_out_files:
+blanks_separate_docs: true

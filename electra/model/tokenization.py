@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from tokenization_utils import BertTokenizer
+from .tokenization_utils import BertTokenizer
 
-from tokenization_utils import BertTokenizer
+from .tokenization_utils import BertTokenizer
 
 VOCAB_FILES_NAMES = {"vocab_file": "vocab.txt"}
 

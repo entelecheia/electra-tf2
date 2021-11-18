@@ -12,4 +12,6 @@ training:
   train_batch_size: 88
   learning_rate: 6e-3
   gradient_accumulation_steps: 48
+  wandb_project: ekonelectra_pretok_test
   wandb_group: ${training.wandb_project}_p1
+  results_dir: /workspace/data/tbts/eKonPLM/result-test

@@ -24,7 +24,7 @@ from tensorflow.python.ops import control_flow_ops
 from tensorflow.python.ops import math_ops
 from tensorflow.python.ops import state_ops
 from tensorflow.python.training import training_ops
-from utils import log
+from ..util.utils import log
 
 
 class WarmUp(tf.keras.optimizers.schedules.LearningRateSchedule):

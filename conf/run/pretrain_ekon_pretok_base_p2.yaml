@@ -2,7 +2,7 @@
 
 defaults:
   - tfrecord_ekon_pretok_512
-  - override /training: pretrain_electra_base
+  - override /training: pretrain_base
   - override /project: ekonelectra_pretok
 
 training:

@@ -19,9 +19,9 @@ import os
 
 import tensorflow as tf
 
-from utils import log, heading
-from run_pretraining import PretrainingConfig
-from modeling import PretrainingModel
+from .utils import log, heading
+from ..pretrain.run_pretraining import PretrainingConfig
+from ..model.modeling import PretrainingModel
 
 
 def from_pretrained_ckpt(args):

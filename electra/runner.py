@@ -1,4 +1,4 @@
-from timer import elapsed_timer
+from .util.timer import elapsed_timer
 from omegaconf import OmegaConf
 
 
@@ -8,10 +8,10 @@ class TFRecords:
 
 	def run(self):
 		print(self.args)
-		# from create_tfrecords import create_tfrecords
-		# with elapsed_timer(format_time=True) as elapsed:
-		# 	create_tfrecords(self.args)
-		# 	print(f"\n >>> Elapsed time: {elapsed()} <<< ")
+		from electra.dataset.build_pretraining_dataset import hydra_run
+		with elapsed_timer(format_time=True) as elapsed:
+			hydra_run(self.args)
+			print(f"\n >>> Elapsed time: {elapsed()} <<< ")
 
 
 class PreTrain:

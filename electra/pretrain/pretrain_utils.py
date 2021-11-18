@@ -21,8 +21,8 @@ import collections
 import numpy as np
 import tensorflow as tf
 
-import utils
-import tokenization
+from ..util import utils
+from ..model import tokenization
 
 
 def get_dataset(config, batch_size, num_cpu_threads=4, world_size=1, rank=0):

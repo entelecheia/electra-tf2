@@ -27,15 +27,15 @@ import wandb
 import tensorflow as tf
 import horovod.tensorflow as hvd
 from horovod.tensorflow.compression import Compression
-from gpu_affinity import set_affinity
+from ..util.gpu_affinity import set_affinity
 
-import utils
+from ..util import utils
 import sys
-import pretrain_utils
-from utils import get_rank, get_world_size, is_main_process, log, log_config, setup_logger, postprocess_dllog
-from tokenization import ElectraTokenizer
-from modeling import PretrainingModel
-from optimization import create_optimizer, GradientAccumulator
+from . import pretrain_utils
+from ..util.utils import get_rank, get_world_size, is_main_process, log, log_config, setup_logger, postprocess_dllog
+from ..model.tokenization import ElectraTokenizer
+from ..model.modeling import PretrainingModel
+from ..model.optimization import create_optimizer, GradientAccumulator
 import dllogger
 
 import hydra
@@ -406,7 +406,10 @@ def main(args, e2e_start_time):
 
         if (step % args.log_freq == 0) and (local_step % args.gradient_accumulation_steps == 0):
             log_info_dict = {k:float(v.result().numpy() * 100) if "accuracy" in k else float(v.result().numpy()) for k, v in metrics.items()}
-            log_info_dict['lr'] = optimizer._optimizer._decayed_lr('float32')
+            try:
+                log_info_dict["lr"] = optimizer._decayed_lr('float32')
+            except:
+                print('optimizer._decayed_lr is not available')
             dllogger.log(step=(step,), data=log_info_dict, verbosity=0)
             wandb.log(log_info_dict, step=step)
             log('Step:{step:6d}, Loss:{total_loss:10.6f}, Gen_loss:{masked_lm_loss:10.6f}, Disc_loss:{disc_loss:10.6f}, Gen_acc:{masked_lm_accuracy:6.2f}, '

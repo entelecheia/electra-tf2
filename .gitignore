@@ -1,7 +1,9 @@
-# Initially taken from Github's Python gitignore file
+tmp/
 wandb/
 logs/
 scripts/nvidia/
+electra/finetune/
+# Initially taken from Github's Python gitignore file
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
