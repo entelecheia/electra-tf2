@@ -49,11 +49,11 @@ fi
 #Start Phase2
 if [ "$RUN_P2" == "true" ] ; then
 
-   CMD=" $CODE_DIR/run_pretraining.py"
+   CMD=" electra.pretrain.run_pretraining"
    CMD+=" --config-dir $CONFIG_DIR"
    CMD+=" +run=${CONFIG_FILE_P2}"
 
-   CMD="$PREFIX python3 $CMD"
+   CMD="$PREFIX python3 -m $CMD"
    echo "Launch command: $CMD"
 
 

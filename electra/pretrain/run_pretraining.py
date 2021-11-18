@@ -407,7 +407,7 @@ def main(args, e2e_start_time):
         if (step % args.log_freq == 0) and (local_step % args.gradient_accumulation_steps == 0):
             log_info_dict = {k:float(v.result().numpy() * 100) if "accuracy" in k else float(v.result().numpy()) for k, v in metrics.items()}
             try:
-                log_info_dict["lr"] = optimizer._decayed_lr('float32')
+                log_info_dict["lr"] = optimizer._optimize._decayed_lr('float32')
             except:
                 print('optimizer._decayed_lr is not available')
             dllogger.log(step=(step,), data=log_info_dict, verbosity=0)
