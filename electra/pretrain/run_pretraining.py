@@ -406,7 +406,7 @@ def main(args, e2e_start_time):
 
         if (step % args.log_freq == 0) and (local_step % args.gradient_accumulation_steps == 0):
             log_info_dict = {k:float(v.result().numpy() * 100) if "accuracy" in k else float(v.result().numpy()) for k, v in metrics.items()}
-            log_info_dict["lr"] = str(optimizer._optimizer._decayed_lr('float32').numpy())
+            log_info_dict["lr"] = float(optimizer._optimizer._decayed_lr('float32').numpy())
             dllogger.log(step=(step,), data=log_info_dict, verbosity=0)
             wandb.log(log_info_dict, step=step)
             log('Step:{step:6d}, Loss:{total_loss:10.6f}, Gen_loss:{masked_lm_loss:10.6f}, Disc_loss:{disc_loss:10.6f}, Gen_acc:{masked_lm_accuracy:6.2f}, '
