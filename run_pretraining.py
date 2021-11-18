@@ -187,9 +187,9 @@ def metric_fn(config, metrics, eval_fn_inputs):
             sample_weight=tf.reshape(d["masked_lm_weights"], [-1]))
         if config.disc_weight > 0:
             metrics["disc_loss"].update_state(d["disc_loss"])
-            #metrics["disc_auc"].update_state(
-            #    d["disc_labels"] * d["input_mask"],
-            #    d["disc_probs"] * tf.cast(d["input_mask"], tf.float32))
+            metrics["disc_auc"].update_state(
+               d["disc_labels"] * d["input_mask"],
+               d["disc_probs"] * tf.cast(d["input_mask"], tf.float32))
             metrics["disc_accuracy"].update_state(
                 y_true=d["disc_labels"], y_pred=d["disc_preds"],
                 sample_weight=d["input_mask"])
@@ -406,6 +406,7 @@ def main(args, e2e_start_time):
 
         if (step % args.log_freq == 0) and (local_step % args.gradient_accumulation_steps == 0):
             log_info_dict = {k:float(v.result().numpy() * 100) if "accuracy" in k else float(v.result().numpy()) for k, v in metrics.items()}
+            log_info_dict['lr'] = optimizer._optimizer._decayed_lr('float32')
             dllogger.log(step=(step,), data=log_info_dict, verbosity=0)
             wandb.log(log_info_dict, step=step)
             log('Step:{step:6d}, Loss:{total_loss:10.6f}, Gen_loss:{masked_lm_loss:10.6f}, Disc_loss:{disc_loss:10.6f}, Gen_acc:{masked_lm_accuracy:6.2f}, '

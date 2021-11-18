@@ -7,10 +7,10 @@ defaults:
 
 training:
   phase2: true
-  resume_training: latest
+  restore_checkpoint: latest
   num_train_steps: 10000
   num_warmup_steps: 200 
-  train_batch_size: 24
+  train_batch_size: 32
   learning_rate: 4e-3
   gradient_accumulation_steps: 144
   wandb_group: ${training.wandb_project}_p2

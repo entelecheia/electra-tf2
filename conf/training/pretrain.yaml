@@ -45,6 +45,7 @@ opt_beta_2: 0.974
 end_lr: 0.0
 seed: 12439
 
+vocab_size: ${datamodule.vocab_size}
 vocab_file: ${datamodule.vocab_file}
 work_dir: ${work_dir}/outputs/${project}
 data_dir: ${work_dir}/lmdata 
