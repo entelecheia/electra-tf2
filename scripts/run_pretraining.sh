@@ -8,7 +8,7 @@ CONFIG_FILE_P2=${3:-"pretrain_ekon_pretok_base_p2"}
 CODE_DIR=${4:-"/workspace/electra"}
 LOG_DIR=${5:-"$CODE_DIR/logs"}
 CONFIG_DIR=${5:-"$CODE_DIR/conf"}
-RUN_P1=${6:-"true"}
+RUN_P1=${6:-"false"}
 RUN_P2=${7:-"true"}
 
 mkdir -p $LOG_DIR
@@ -21,11 +21,11 @@ fi
 
 if [ "$RUN_P1" == "true" ] ; then
 
-   CMD=" $CODE_DIR/run_pretraining.py"
+   CMD=" electra.pretrain.run_pretraining"
    CMD+=" --config-dir $CONFIG_DIR"
    CMD+=" +run=${CONFIG_FILE_P1}"
 
-   CMD="$PREFIX python3 $CMD"
+   CMD="$PREFIX python3 -m $CMD"
    echo "Launch command: $CMD"
 
    DATESTAMP=`date +'%y%m%d%H%M%S'`
@@ -49,11 +49,11 @@ fi
 #Start Phase2
 if [ "$RUN_P2" == "true" ] ; then
 
-   CMD=" $CODE_DIR/run_pretraining.py"
+   CMD=" electra.pretrain.run_pretraining"
    CMD+=" --config-dir $CONFIG_DIR"
    CMD+=" +run=${CONFIG_FILE_P2}"
 
-   CMD="$PREFIX python3 $CMD"
+   CMD="$PREFIX python3 -m $CMD"
    echo "Launch command: $CMD"
 
 

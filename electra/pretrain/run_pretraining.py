@@ -53,7 +53,8 @@ class PretrainingConfig(object):
         self.debug = False  # debug mode for quickly running things
         self.do_train = True  # pre-train ELECTRA
         self.do_eval = False  # evaluate generator/discriminator on unlabeled data
-        self.phase2 = False
+        # self.phase2 = False
+        self.phase = 1
 
         # amp
         self.amp = True
@@ -187,9 +188,9 @@ def metric_fn(config, metrics, eval_fn_inputs):
             sample_weight=tf.reshape(d["masked_lm_weights"], [-1]))
         if config.disc_weight > 0:
             metrics["disc_loss"].update_state(d["disc_loss"])
-            metrics["disc_auc"].update_state(
-               d["disc_labels"] * d["input_mask"],
-               d["disc_probs"] * tf.cast(d["input_mask"], tf.float32))
+            # metrics["disc_auc"].update_state(
+            #    d["disc_labels"] * d["input_mask"],
+            #    d["disc_probs"] * tf.cast(d["input_mask"], tf.float32))
             metrics["disc_accuracy"].update_state(
                 y_true=d["disc_labels"], y_pred=d["disc_preds"],
                 sample_weight=d["input_mask"])
@@ -280,8 +281,9 @@ def main(args, e2e_start_time):
     # Set up config cont'
     if config.load_weights and config.restore_checkpoint:
         raise ValueError("`load_weights` and `restore_checkpoint` should not be on at the same time.")
-    if config.phase2 and not config.restore_checkpoint:
-        raise ValueError("`phase2` cannot be used without `restore_checkpoint`.")
+    if config.phase > 1 and not config.restore_checkpoint:
+    # if config.phase2 and not config.restore_checkpoint:
+        raise ValueError("`phase > 1` cannot be used without `restore_checkpoint`.")
     utils.heading("Config:")
     log_config(config)
 
@@ -304,7 +306,7 @@ def main(args, e2e_start_time):
         metrics["sampled_masked_lm_accuracy"] = tf.keras.metrics.Accuracy(name="sampled_masked_lm_accuracy")
         if config.disc_weight > 0:
             metrics["disc_loss"] = tf.keras.metrics.Mean(name="disc_loss")
-            metrics["disc_auc"] = tf.keras.metrics.AUC(name="disc_auc")
+            # metrics["disc_auc"] = tf.keras.metrics.AUC(name="disc_auc")
             metrics["disc_accuracy"] = tf.keras.metrics.Accuracy(name="disc_accuracy")
             metrics["disc_precision"] = tf.keras.metrics.Accuracy(name="disc_precision")
             metrics["disc_recall"] = tf.keras.metrics.Accuracy(name="disc_recall")
@@ -339,7 +341,7 @@ def main(args, e2e_start_time):
 
     # Set up model checkpoint
     checkpoint = tf.train.Checkpoint(
-        step=tf.Variable(0), phase2=tf.Variable(False), optimizer=optimizer, model=model)
+        step=tf.Variable(0), phase=tf.Variable(1), optimizer=optimizer, model=model)
     manager = tf.train.CheckpointManager(checkpoint, config.checkpoints_dir, max_to_keep=config.keep_checkpoint_max)
     if config.restore_checkpoint and config.restore_checkpoint != "latest":
         checkpoint.restore(config.restore_checkpoint)
@@ -357,15 +359,18 @@ def main(args, e2e_start_time):
 
     restore_iterator = bool(config.restore_checkpoint) and config.restore_checkpoint == "latest"
     # Initialize global step for phase2
-    if config.phase2 and not bool(checkpoint.phase2):
+    if config.phase > 1 and not int(checkpoint.phase) == 1:
+    # if config.phase > 1 and not bool(checkpoint.phase2):
         optimizer.iterations.assign(0)
         checkpoint.step.assign(0)
-        checkpoint.phase2.assign(True)
+        checkpoint.phase.assign(config.phase)
+        # checkpoint.phase2.assign(True)
         restore_iterator = False
-    if bool(checkpoint.phase2):
+    if int(checkpoint.phase) > 1:
+    # if bool(checkpoint.phase2):
         manager = tf.train.CheckpointManager(
             checkpoint, config.checkpoints_dir,
-            checkpoint_name='ckpt-p2',
+            checkpoint_name=f'ckpt-p{config.phase}',
             max_to_keep=config.keep_checkpoint_max)
 
     # Set up iterator checkpoint

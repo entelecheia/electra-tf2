@@ -9,6 +9,6 @@ datamodule:
   n_test_shards: 0
   fraction_test_set: 0
   num_processes: 220
-  random_seed: 12345
+  seed: 12345
   max_seq_length: 512
   do_lower_case: 1

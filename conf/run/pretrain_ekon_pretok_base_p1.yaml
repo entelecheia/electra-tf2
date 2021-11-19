@@ -6,10 +6,10 @@ defaults:
   - override /project: ekonelectra_pretok
 
 training:
+  phase: 1
   phase2: false
-  num_train_steps: 10000
+  num_train_steps: 20000
   num_warmup_steps: 2000
   train_batch_size: 88
   learning_rate: 6e-3
   gradient_accumulation_steps: 48
-  wandb_group: ${training.wandb_project}_p1

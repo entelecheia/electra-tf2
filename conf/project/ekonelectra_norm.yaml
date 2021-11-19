@@ -1,0 +1,8 @@
+# @package _global_
+
+app_name: eKonPLM
+project: ekonelectra_norm
+data_dir: ${work_dir}/lmdata
+dataset: ekon_norm
+vocab_size: 32000
+vocab_file: /workspace/data/models/tokenizers/ekon_wp_norm_v32000/vocab.txt
