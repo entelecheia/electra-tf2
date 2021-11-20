@@ -7,7 +7,6 @@ defaults:
 
 training:
   phase: 2
-  phase2: true
   restore_checkpoint: latest
   num_train_steps: 5000
   num_warmup_steps: 500

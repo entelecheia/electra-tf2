@@ -4,7 +4,7 @@ echo "Container nvidia build = " $NVIDIA_BUILD_ID
 
 NUM_GPUS=${1:-5}
 PHASE=${2:-1}
-CONFIG_FILE=${2:-"pretrain_ekon_pretok2_base"}
+CONFIG_FILE=${3:-"pretrain_ekon_pretok2_base"}
 CODE_DIR=${4:-"/workspace/electra"}
 LOG_DIR=${5:-"$CODE_DIR/logs"}
 CONFIG_DIR=${5:-"$CODE_DIR/conf"}

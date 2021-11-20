@@ -449,7 +449,7 @@ class PretrainingConfig(object):
         self.results_dir = "results"
         self.json_summary = None
 
-        self.wandb_group = 'electra'
+        self.wandb_group = f'electra-pretraining-p{self.phase}'
         self.wandb_project = 'electra-pretraining'
         self.update(kwargs)
         # default locations of data files

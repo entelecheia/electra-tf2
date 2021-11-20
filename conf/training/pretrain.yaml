@@ -31,7 +31,6 @@ save_checkpoints_steps: 500
 keep_checkpoint_max: 5
 restore_checkpoint: latest
 load_weights: false
-weights_dir:
 
 # adam or lamb
 optimizer: lamb
@@ -55,6 +54,11 @@ archive_after_training: true
 archive_dir: ${archive_dir}/checkpoints/${project}/${training.model_size}/checkpoints_p${training.phase}
 extract_models_from_pretrained_ckpts: true
 output_dir: ${archive_dir}/models/${project}/${training.model_size}/checkpoints_p${training.phase}
+model_dir:  ${training.results_dir}/models/${training.model_name}
+checkpoints_dir: ${training.model_dir}/checkpoints
+weights_dir: ${training.model_dir}/weights
+results_txt: ${training.results_dir}/unsup_results.txt
+results_pkl: ${training.results_dir}unsup_results.pkl
 skip_checkpoint: false
 # If provided, the json summary will be written to the specified file.
 json_summary:

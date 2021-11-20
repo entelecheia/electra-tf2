@@ -25,6 +25,10 @@ from .utils import log, heading
 from ..pretrain.pretrain_utils import PretrainingConfig
 from ..model.modeling import PretrainingModel
 
+import hydra
+from omegaconf import DictConfig, OmegaConf
+from pprint import pprint
+
 
 def from_pretrained_ckpt(pretrained_checkpoint, output_dir, amp=False):
     config = PretrainingConfig(
@@ -71,13 +75,24 @@ def extract_models_from_pretrained_ckpts(args):
         from_pretrained_ckpt(f, output_dir, amp=args.amp)
 
 
+@hydra.main(config_path="conf", config_name="config")
+def hydra_main(cfg: DictConfig):
+
+    # Pretty print config using Rich library
+    if cfg.get("print_config"):
+        print('## hydra configuration ##')
+        print(OmegaConf.to_yaml(cfg))
+
+    if cfg.get("print_resolved_config"):
+        args = OmegaConf.to_container(cfg, resolve=True)
+        print('## hydra configuration resolved ##')
+        pprint(args)
+        print()
+
+    config = PretrainingConfig(**cfg.training)
+    print(config)
+    extract_models_from_pretrained_ckpts(config)
+    
+
 if __name__ == "__main__":
-    # Parse essential args
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--checkpoints_dir')
-    parser.add_argument('--output_dir')
-    parser.add_argument('--amp', action='store_true', default=False)
-    args = parser.parse_args()
-    print(args)
-    extract_models_from_pretrained_ckpts(args)
-    # from_pretrained_ckpt(args)
+    hydra_main()

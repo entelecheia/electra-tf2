@@ -117,11 +117,7 @@ def train_one_step(config, model, optimizer, features, accumulator, first_step, 
 
     return unscaled_loss, eval_fn_inputs
 
-def main(args, e2e_start_time): 
-    config = PretrainingConfig(**args)
-    print(config)
-    os.makedirs(config.results_dir, exist_ok=True)
-
+def main(args, config, e2e_start_time): 
     # Padding for divisibility by 8
     if config.vocab_size % 8 != 0:
         config.vocab_size += 8 - (config.vocab_size % 8)
@@ -129,7 +125,6 @@ def main(args, e2e_start_time):
     # Set up tensorflow
     hvd.init()
 
-    args.log_dir = config.log_dir
     # DLLogger
     setup_logger(args)
     # wandb init
@@ -273,7 +268,7 @@ def main(args, e2e_start_time):
 
         # if step == 200: tf.profiler.experimental.start(logdir=train_log_dir)
         total_loss, eval_fn_inputs = train_one_step(config, model, optimizer, features, accumulator,
-                                                    local_step==1, take_step=local_step % args.gradient_accumulation_steps == 0)
+                                                    local_step==1, take_step=local_step % config.gradient_accumulation_steps == 0)
         # if step == 300: tf.profiler.experimental.stop()
 
         metrics["train_perf"].update_state(
@@ -281,7 +276,7 @@ def main(args, e2e_start_time):
         metrics["total_loss"].update_state(values=total_loss)
         metric_fn(config, metrics, eval_fn_inputs)
 
-        if (step % args.log_freq == 0) and (local_step % args.gradient_accumulation_steps == 0):
+        if (step % config.log_freq == 0) and (local_step % config.gradient_accumulation_steps == 0):
             log_info_dict = {k:float(v.result().numpy() * 100) if "accuracy" in k else float(v.result().numpy()) for k, v in metrics.items()}
             log_info_dict["lr"] = float(optimizer._optimizer._decayed_lr('float32').numpy())
             dllogger.log(step=(step,), data=log_info_dict, verbosity=0)
@@ -304,7 +299,7 @@ def main(args, e2e_start_time):
                     m.reset_states()
 
         #Print allreduced metrics on the last step
-        if int(checkpoint.step) == config.num_train_steps and (local_step % args.gradient_accumulation_steps == 0):
+        if int(checkpoint.step) == config.num_train_steps and (local_step % config.gradient_accumulation_steps == 0):
             log_info_dict = {k:float(hvd.allreduce(v.result()).numpy() * 100) if "accuracy" in k else float(hvd.allreduce(v.result()).numpy()) for k, v in metrics.items()}
             log_info_dict["training_sequences_per_second"] = log_info_dict["train_perf"]
             log_info_dict["final_loss"] = log_info_dict["total_loss"]
@@ -316,11 +311,11 @@ def main(args, e2e_start_time):
                 step=step, **log_info_dict),
                 all_rank=False)
 
-        if local_step % args.gradient_accumulation_steps == 0:
+        if local_step % config.gradient_accumulation_steps == 0:
             checkpoint.step.assign(int(optimizer.iterations))
         
         local_step += 1
-        if not config.skip_checkpoint and (local_step % (config.save_checkpoints_steps * args.gradient_accumulation_steps) == 0):
+        if not config.skip_checkpoint and (local_step % (config.save_checkpoints_steps * config.gradient_accumulation_steps) == 0):
             saved_ckpt = True
             if is_main_process():
                 save_path = manager.save(checkpoint_number=step)
@@ -356,12 +351,14 @@ def hydra_main(cfg: DictConfig):
 
     log(f"Current working directory : {os.getcwd()}")
     start_time = time.time()
-    args = main(cfg.training, start_time)
+    config = PretrainingConfig(**cfg.training)
+    print(config)
+    os.makedirs(config.results_dir, exist_ok=True)
+    args = main(cfg.training, config, start_time)
     log("Total Time:{:.4f}".format(time.time() - start_time))
     if is_main_process():
         postprocess_dllog(args)
         if args.archive_after_training:
-            config = PretrainingConfig(**args)
             log(f"Archiviing checkpoints from {config.checkpoints_dir} to {config.archive_dir}")
             os.makedirs(config.archive_dir, exist_ok=True)
             os.system(f"cp -rf {config.checkpoints_dir} {config.archive_dir}")
