@@ -51,6 +51,10 @@ work_dir: ${work_dir}/outputs/${project}
 data_dir: ${work_dir}/lmdata 
 log_dir: ${training.work_dir}/logs
 results_dir: ${training.work_dir}/results
+archive_after_training: true
+archive_dir: ${archive_dir}/checkpoints/${project}/${training.model_size}/checkpoints_p${training.phase}
+extract_models_from_pretrained_ckpts: true
+output_dir: ${archive_dir}/models/${project}/${training.model_size}/checkpoints_p${training.phase}
 skip_checkpoint: false
 # If provided, the json summary will be written to the specified file.
 json_summary:

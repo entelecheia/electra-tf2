@@ -22,6 +22,7 @@ dataset: null
 work_dir: /workspace/data/tbts/${app_name}
 data_dir: ${work_dir}/data
 log_dir: ${work_dir}/logs
+archive_dir: ${work_dir}/archive
 # path to original working directory
 runtime_dir: ${hydra:runtime.cwd}
 

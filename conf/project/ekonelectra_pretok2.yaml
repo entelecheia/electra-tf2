@@ -1,0 +1,9 @@
+# @package _global_
+
+app_name: eKonPLM
+project: ekonelectra_pretok2
+data_dir: ${work_dir}/lmdata
+archive_dir: /workspace/data/tbts/archive
+dataset: ekon_pretok
+vocab_size: 32000
+vocab_file: /workspace/data/models/tokenizers/ekon_wp_pretok_v32000/vocab.txt
