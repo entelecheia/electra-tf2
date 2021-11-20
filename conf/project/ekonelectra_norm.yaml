@@ -2,6 +2,7 @@
 
 app_name: eKonPLM
 project: ekonelectra_norm
+archive_dir: /workspace/data/tbts/archive
 data_dir: ${work_dir}/lmdata
 dataset: ekon_norm
 vocab_size: 32000

@@ -62,9 +62,12 @@ def metric_fn(config, metrics, eval_fn_inputs):
             sample_weight=tf.reshape(d["masked_lm_weights"], [-1]))
         if config.disc_weight > 0:
             metrics["disc_loss"].update_state(d["disc_loss"])
-            # metrics["disc_auc"].update_state(
-            #    d["disc_labels"] * d["input_mask"],
-            #    d["disc_probs"] * tf.cast(d["input_mask"], tf.float32))
+            try:
+                metrics["disc_auc"].update_state(
+                d["disc_labels"] * d["input_mask"],
+                d["disc_probs"] * tf.cast(d["input_mask"], tf.float32))
+            except:
+                pass
             metrics["disc_accuracy"].update_state(
                 y_true=d["disc_labels"], y_pred=d["disc_preds"],
                 sample_weight=d["input_mask"])
@@ -175,7 +178,7 @@ def main(args, config, e2e_start_time):
         metrics["sampled_masked_lm_accuracy"] = tf.keras.metrics.Accuracy(name="sampled_masked_lm_accuracy")
         if config.disc_weight > 0:
             metrics["disc_loss"] = tf.keras.metrics.Mean(name="disc_loss")
-            # metrics["disc_auc"] = tf.keras.metrics.AUC(name="disc_auc")
+            metrics["disc_auc"] = tf.keras.metrics.AUC(name="disc_auc")
             metrics["disc_accuracy"] = tf.keras.metrics.Accuracy(name="disc_accuracy")
             metrics["disc_precision"] = tf.keras.metrics.Accuracy(name="disc_precision")
             metrics["disc_recall"] = tf.keras.metrics.Accuracy(name="disc_recall")
@@ -301,11 +304,11 @@ def main(args, config, e2e_start_time):
         #Print allreduced metrics on the last step
         if int(checkpoint.step) == config.num_train_steps and (local_step % config.gradient_accumulation_steps == 0):
             log_info_dict = {k:float(hvd.allreduce(v.result()).numpy() * 100) if "accuracy" in k else float(hvd.allreduce(v.result()).numpy()) for k, v in metrics.items()}
+            wandb.log(log_info_dict)
             log_info_dict["training_sequences_per_second"] = log_info_dict["train_perf"]
             log_info_dict["final_loss"] = log_info_dict["total_loss"]
             log_info_dict["e2e_train_time"] = time.time() - e2e_start_time
             dllogger.log(step=(), data=log_info_dict, verbosity=0)
-            wandb.log(log_info_dict)
             log('<FINAL STEP METRICS> Step:{step:6d}, Loss:{total_loss:10.6f}, Gen_loss:{masked_lm_loss:10.6f}, Disc_loss:{disc_loss:10.6f}, Gen_acc:{masked_lm_accuracy:6.2f}, '
                 'Disc_acc:{disc_accuracy:6.2f}, Perf:{train_perf:4.0f},'.format(
                 step=step, **log_info_dict),

@@ -2,6 +2,7 @@
 
 app_name: eKonPLM
 project: ekonelectra_pretok
+archive_dir: /workspace/data/tbts/archive
 data_dir: ${work_dir}/lmdata
 dataset: ekon_pretok
 vocab_size: 32000
