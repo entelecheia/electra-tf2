@@ -1,0 +1,2 @@
+do_lower_case: ${datamodule.do_lower_case}
+model_max_length: ${datamodule.max_seq_length}

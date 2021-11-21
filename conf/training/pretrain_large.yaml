@@ -2,7 +2,7 @@ defaults:
   - pretrain
 
 training:
-model_size: base
+model_size: large
 # Whether to use fp16
 amp: true
 # Whether to use xla
@@ -23,6 +23,6 @@ opt_beta_2: 0.974
 end_lr: 0.0
 seed: 12439
 
-embedding_size: 768
-hidden_size: 768
-num_hidden_layers: 12
+embedding_size: 1024
+hidden_size: 1024
+num_hidden_layers: 24

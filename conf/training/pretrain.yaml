@@ -25,6 +25,13 @@ gen_weight: 1.0
 disc_weight: 50.0
 generator_hidden_size: 0.3333333
 
+embedding_size:
+hidden_size:
+num_hidden_layers:
+act_func: gelu
+hidden_dropout_prob: 0.1 
+attention_probs_dropout_prob: 0.1
+
 # Training metrics logging frequency
 log_freq: 10
 save_checkpoints_steps: 500
@@ -53,12 +60,15 @@ results_dir: ${training.work_dir}/results
 archive_after_training: true
 archive_dir: ${archive_dir}/checkpoints/${project}/${training.model_size}/checkpoints_p${training.phase}
 extract_models_from_pretrained_ckpts: true
-output_dir: ${archive_dir}/models/${project}/${training.model_size}/checkpoints_p${training.phase}
+output_dir: ${archive_dir}/models/tf/${project}/${training.model_size}/checkpoints_p${training.phase}
 model_dir:  ${training.results_dir}/models/${training.model_name}
 checkpoints_dir: ${training.model_dir}/checkpoints
 weights_dir: ${training.model_dir}/weights
 results_txt: ${training.results_dir}/unsup_results.txt
-results_pkl: ${training.results_dir}unsup_results.pkl
+results_pkl: ${training.results_dir}/unsup_results.pkl
+config_file: ${training.checkpoints_dir}/pretrain_config.json
+covert_ckpt_to_torch: true
+torch_output_dir: ${archive_dir}/models/torch/${project}/${training.model_size}/checkpoints_p${training.phase}
 skip_checkpoint: false
 # If provided, the json summary will be written to the specified file.
 json_summary:

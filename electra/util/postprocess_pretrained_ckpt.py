@@ -70,8 +70,8 @@ def from_pretrained_ckpt(pretrained_checkpoint, output_dir, amp=False):
 def extract_models_from_pretrained_ckpts(args):
     print(f"Extracting discriminators and generators from {args.checkpoints_dir} to {args.output_dir}")
     for f in glob.glob(f'{args.checkpoints_dir}/*.index'):
-        chpt_dir = Path(f).stem
-        output_dir = f'{args.output_dir}/{chpt_dir}'
+        ckpt = Path(f).stem
+        output_dir = f'{args.output_dir}/{ckpt}'
         from_pretrained_ckpt(f, output_dir, amp=args.amp)
 
 
@@ -92,7 +92,7 @@ def hydra_main(cfg: DictConfig):
     config = PretrainingConfig(**cfg.training)
     print(config)
     extract_models_from_pretrained_ckpts(config)
-    
+
 
 if __name__ == "__main__":
     hydra_main()

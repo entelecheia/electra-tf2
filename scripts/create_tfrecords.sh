@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python run.py +run=tfrecord_ekon_pretok_256_
+python run.py +run=tfrecord_ekon_norm_512

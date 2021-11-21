@@ -25,10 +25,10 @@ RUN git clone https://github.com/soskek/bookcorpus.git
 WORKDIR /workspace/electra
 RUN pip install --upgrade --no-cache-dir pip \
  && pip install --no-cache-dir \
- tqdm boto3 requests six ipdb h5py html2text nltk progressbar filelock tokenizers==0.7.0 wandb hydra-core hydra-colorlog \
+ tqdm boto3 requests six ipdb h5py html2text nltk progressbar filelock transformers=3.5.1 torch==1.7.1 wandb hydra-core hydra-colorlog \
  git+https://github.com/NVIDIA/dllogger \
  nvidia-ml-py3==7.352.0
-
+# tokenizers==0.7.0
 RUN apt-get install -y iputils-ping
 COPY . .
 

@@ -7,6 +7,8 @@ defaults:
   - project: null
   - datamodule: null
   - training: null
+  - model: null
+  - tokenizer: null
   - logger: null
 
   # - overide hydra: default

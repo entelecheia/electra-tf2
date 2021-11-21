@@ -4,6 +4,8 @@ defaults:
   - tfrecord_ekon_pretok_512
   - override /training: pretrain_base
   - override /project: ekonelectra_pretok2
+  - override /model: base
+  - override /tokenizer: default
 
 training:
   phase: 2
