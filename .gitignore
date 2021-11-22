@@ -1,3 +1,4 @@
+conf/run/
 tmp/
 wandb/
 logs/
