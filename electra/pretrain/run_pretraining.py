@@ -37,7 +37,6 @@ from ..util.utils import get_rank, get_world_size, is_main_process, log, log_con
 from ..model.tokenization import ElectraTokenizer
 from ..model.modeling import PretrainingModel
 from ..model.optimization import create_optimizer, GradientAccumulator
-from ..util.postprocess_pretrained_ckpt import extract_models_from_pretrained_ckpts
 import dllogger
 
 import hydra
@@ -364,9 +363,15 @@ def hydra_main(cfg: DictConfig):
         if args.archive_after_training:
             log(f"Archiviing checkpoints from {config.checkpoints_dir} to {config.archive_dir}")
             os.makedirs(config.archive_dir, exist_ok=True)
-            os.system(f"cp -rf {config.checkpoints_dir} {config.archive_dir}")
-            extract_models_from_pretrained_ckpts(config)
-
+            os.system(f"cp -rf {args.checkpoints_dir}/* {args.archive_dir}")
+            if args.extract_models_from_pretrained_ckpts:
+                log(f"Extracting tesorflow models from pretrained checkpoints")
+                from ..util.postprocess_pretrained_ckpt import extract_models_from_pretrained_ckpts
+                extract_models_from_pretrained_ckpts(config)
+            if args.covert_ckpt_to_torch:
+                log(f'Converting tensorflow checkpoints to pytoch')
+                from ..util.convert_ckpt_to_torch import convert_ckpt_to_pytorch
+                convert_ckpt_to_pytorch(config)
 
 if __name__ == "__main__":
     hydra_main()

@@ -68,8 +68,12 @@ def from_pretrained_ckpt(pretrained_checkpoint, output_dir, amp=False):
 
 
 def extract_models_from_pretrained_ckpts(args):
-    print(f"Extracting discriminators and generators from {args.checkpoints_dir} to {args.output_dir}")
-    for f in glob.glob(f'{args.checkpoints_dir}/*.index'):
+    if args.archive_after_training:
+        log(f"Archiviing checkpoints from {args.checkpoints_dir} to {args.archive_dir}")
+        os.makedirs(args.archive_dir, exist_ok=True)
+        os.system(f"cp -rf {args.checkpoints_dir}/* {args.archive_dir}")
+    print(f"Extracting discriminators and generators from {args.archive_dir} to {args.output_dir}")
+    for f in glob.glob(f'{args.archive_dir}/*.index'):
         ckpt = Path(f).stem
         output_dir = f'{args.output_dir}/{ckpt}'
         from_pretrained_ckpt(f, output_dir, amp=args.amp)

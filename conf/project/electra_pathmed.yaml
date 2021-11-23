@@ -1,0 +1,8 @@
+# @package _global_
+
+app_name: pathML
+project: electra_pathmed
+dataset: pathobook_pubmed_ds
+archive_dir: /workspace/data/tbts/archive
+vocab_size: 32000
+vocab_file: /workspace/data/models/tokenizers/pathmed_wp_v32000/vocab.txt

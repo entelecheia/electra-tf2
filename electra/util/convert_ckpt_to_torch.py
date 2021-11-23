@@ -52,26 +52,17 @@ def convert_tf_checkpoint_to_pytorch(tf_checkpoint_path, config_file, pytorch_du
     print("Save PyTorch model to {}".format(pytorch_dump_path))
     torch.save(model.state_dict(), pytorch_dump_path)
 
-
-@hydra.main(config_path="conf", config_name="config")
-def hydra_main(cfg: DictConfig):
-
-    # Pretty print config using Rich library
-    if cfg.get("print_config"):
-        print('## hydra configuration ##')
-        print(OmegaConf.to_yaml(cfg))
-
-    if cfg.get("print_resolved_config"):
-        args = OmegaConf.to_container(cfg, resolve=True)
-        print('## hydra configuration resolved ##')
-        pprint(args)
-        print()
-
-    args = cfg.training
+def convert_ckpt_to_pytorch(cfg):
+    args=cfg.training
+    if args.archive_after_training:
+        print(f"Archiviing checkpoints from {args.checkpoints_dir} to {args.archive_dir}")
+        os.makedirs(args.archive_dir, exist_ok=True)
+        os.system(f"cp -rf {args.checkpoints_dir}/* {args.archive_dir}")
+    print(f'Converting tensorflow checkpoints to pytoch')
     os.makedirs(args.torch_output_dir, exist_ok=True)
-    ckpt_file = f'{args.checkpoints_dir}/checkpoint'
+    ckpt_file = f'{args.archive_dir}/checkpoint'
     org_contents = open(ckpt_file, 'r').read()
-    for f in glob.glob(f'{args.checkpoints_dir}/*.index'):
+    for f in glob.glob(f'{args.archive_dir}/*.index'):
         ckpt = Path(f).stem
         print('processing checkpoint-{}'.format(ckpt))
         ckpt_contents = f'model_checkpoint_path: "{ckpt}"\n'
@@ -94,11 +85,28 @@ def hydra_main(cfg: DictConfig):
             pytorch_dump_path = f'{output_dir}/pytorch_model.bin'
             print(f'Saving {model_type} to {pytorch_dump_path}')
             convert_tf_checkpoint_to_pytorch(
-                args.checkpoints_dir, config_file, pytorch_dump_path, model_type
+                args.archive_dir, config_file, pytorch_dump_path, model_type
             )
     # restore original contents
     open(ckpt_file, 'w').write(org_contents)
 
+
+@hydra.main(config_path="conf", config_name="config")
+def hydra_main(cfg: DictConfig):
+
+    # Pretty print config using Rich library
+    if cfg.get("print_config"):
+        print('## hydra configuration ##')
+        print(OmegaConf.to_yaml(cfg))
+
+    if cfg.get("print_resolved_config"):
+        args = OmegaConf.to_container(cfg, resolve=True)
+        print('## hydra configuration resolved ##')
+        pprint(args)
+        print()
+
+    convert_ckpt_to_pytorch(cfg) 
+ 
 
 if __name__ == "__main__":
     hydra_main()

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PHASE=${1:-1}
-CONFIG_FILE=${2:-"pretrain_ekon_pretok2_base"}
+CONFIG_FILE=${2:-"ekon_pretok2_pretrain_base"}
 CONFIG_DIR=${3:-"/workspace/electra/conf"}
 PHASE_CONFIG_FILE=${CONFIG_FILE}_p${PHASE}
 
