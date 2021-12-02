@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python run.py +run=tfrecord_ekon_norm_512
+python run.py +run=path100med_tfrecord_128_cased

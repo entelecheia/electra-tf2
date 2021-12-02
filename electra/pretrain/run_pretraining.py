@@ -213,7 +213,10 @@ def main(args, config, e2e_start_time):
     # Set up model checkpoint
     checkpoint = tf.train.Checkpoint(
         step=tf.Variable(0), phase=tf.Variable(1), optimizer=optimizer, model=model)
-    manager = tf.train.CheckpointManager(checkpoint, config.checkpoints_dir, max_to_keep=config.keep_checkpoint_max)
+    manager = tf.train.CheckpointManager(
+        checkpoint, config.checkpoints_dir, 
+        checkpoint_name=f'ckpt-p{config.phase}',
+        max_to_keep=config.keep_checkpoint_max)
     if config.restore_checkpoint and config.restore_checkpoint != "latest":
         checkpoint.restore(config.restore_checkpoint)
         log(" ** Restored model checkpoint from {}".format(config.restore_checkpoint))
@@ -230,7 +233,7 @@ def main(args, config, e2e_start_time):
 
     restore_iterator = bool(config.restore_checkpoint) and config.restore_checkpoint == "latest"
     # Initialize global step for phase2
-    if config.phase > 1 and int(checkpoint.phase) == 1:
+    if config.phase > 1 and int(checkpoint.phase) != config.phase:
         optimizer.iterations.assign(0)
         checkpoint.step.assign(0)
         checkpoint.phase.assign(config.phase)
@@ -364,14 +367,14 @@ def hydra_main(cfg: DictConfig):
             log(f"Archiviing checkpoints from {config.checkpoints_dir} to {config.archive_dir}")
             os.makedirs(config.archive_dir, exist_ok=True)
             os.system(f"cp -rf {args.checkpoints_dir}/* {args.archive_dir}")
-            if args.extract_models_from_pretrained_ckpts:
-                log(f"Extracting tesorflow models from pretrained checkpoints")
-                from ..util.postprocess_pretrained_ckpt import extract_models_from_pretrained_ckpts
-                extract_models_from_pretrained_ckpts(config)
-            if args.covert_ckpt_to_torch:
-                log(f'Converting tensorflow checkpoints to pytoch')
-                from ..util.convert_ckpt_to_torch import convert_ckpt_to_pytorch
-                convert_ckpt_to_pytorch(config)
+            # if args.extract_models_from_pretrained_ckpts:
+            #     log(f"Extracting tesorflow models from pretrained checkpoints")
+            #     from ..util.postprocess_pretrained_ckpt import extract_models_from_pretrained_ckpts
+            #     extract_models_from_pretrained_ckpts(config)
+            # if args.covert_ckpt_to_torch:
+            #     log(f'Converting tensorflow checkpoints to pytoch')
+            #     from ..util.convert_ckpt_to_torch import convert_ckpt_to_pytorch
+            #     convert_ckpt_to_pytorch(cfg)
 
 if __name__ == "__main__":
     hydra_main()
