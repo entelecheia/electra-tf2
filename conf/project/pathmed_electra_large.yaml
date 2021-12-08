@@ -2,6 +2,7 @@
 
 app_name: pathML
 project: pathmed-electra-large
+archive_dir: /workspace/data/tbts/archive
 dataset: pathmed
 vocab_size: 32000
 vocab_file: /workspace/data/models/tokenizers/path500med_bwp_v32000/vocab.txt
