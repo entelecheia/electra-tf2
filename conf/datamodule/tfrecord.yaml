@@ -6,15 +6,16 @@ _target_: electra.runner.TFRecords
 n_training_shards: 2048
 n_test_shards: 2048
 fraction_test_set: 0.1
+shard_shuffle_seed: 123
 max_seq_length: 512
 # Specify whether it is cased (0) or uncased (1) (any number greater than 0 will be treated as uncased)
 do_lower_case: 1 
 # Specify absolute path to vocab file to use)
 vocab_size: ${vocab_size}
 vocab_file: ${vocab_file} 
-tfrecord_folder_prefix: _lower_case_${datamodule.do_lower_case}_seq_len_${datamodule.max_seq_length}_seed_${datamodule.seed}
-sharded_dir: ${datamodule.data_dir}/sharded_training_${datamodule.n_training_shards}_test_${datamodule.n_test_shards}_fraction_${datamodule.fraction_test_set}/${datamodule.dataset}
-tfrecord_dir: ${datamodule.output_dir}/tfrecord${datamodule.tfrecord_folder_prefix}/${datamodule.dataset}
+tfrecord_folder_prefix: _lower_case_${.do_lower_case}_seq_len_${.max_seq_length}_seed_${.seed}
+sharded_dir: ${.data_dir}/sharded_train_${.n_training_shards}_test_${.n_test_shards}_fraction_${.fraction_test_set}_seed_${.shard_shuffle_seed}/${.dataset}
+tfrecord_dir: ${.output_dir}/tfrecord${.tfrecord_folder_prefix}/${.dataset}
 corpus_dir: 
 num_out_files:
 blanks_separate_docs: true

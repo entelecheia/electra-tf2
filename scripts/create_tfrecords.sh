@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python run.py +run=path100med_tfrecord_512_cased
+python run.py +run=ekon_pretok_tfrecord_128
